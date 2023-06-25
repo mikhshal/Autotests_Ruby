@@ -31,16 +31,11 @@ jobs:
 
       - name: Install Gems from Gemfile
         run: bundle install
+      - name: Run Cucumber Tests
+        run: cucumber --format html --out report.html
 
-      - name: Build with cucumber
-        run: cucumber --publish
-        
-      - name: Extract Cucumber report link
-        run: |
-          report_file=$(find . -name 'report.html' -type f)
-          if [[ -f $report_file ]]; then
-            report_link=$(grep -oP '(?<=<a href=")[^"]+' $report_file)
-            echo "Cucumber Report Link: ${report_link%/}"
-          else
-            echo "Cucumber Report Link not found"
-          fi
+      - name: Upload Cucumber Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: Cucumber Report
+          path: report.html

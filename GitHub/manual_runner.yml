@@ -1,0 +1,28 @@
+name: Manual Autotests runner
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '3.x'
+
+      - name: Install Chrome Driver
+        run: gem install webdrivers
+
+      - name: Build with cucumber
+        run: cucumber --publish
+
+

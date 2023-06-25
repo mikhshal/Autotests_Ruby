@@ -18,6 +18,13 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: '3.x'
+      - name: Install ChromeDriver
+        run: |
+          LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+          wget -qP /home/runner/.webdrivers/ "https://chromedriver.storage.googleapis.com/$LATEST_CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+          unzip -q /home/runner/.webdrivers/chromedriver_linux64.zip -d /home/runner/.webdrivers/
+          chmod +x /home/runner/.webdrivers/chromedriver
+          rm /home/runner/.webdrivers/chromedriver_linux64.zip    
 
       - name: Install Gem Bundler
         run: gem install bundler

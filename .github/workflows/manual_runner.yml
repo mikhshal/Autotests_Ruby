@@ -1,0 +1,36 @@
+name: Manual Autotests runner
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '3.x'
+      - name: Install ChromeDriver
+        run: |
+          LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+          wget -qP /home/runner/.webdrivers/ "https://chromedriver.storage.googleapis.com/$LATEST_CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+          unzip -q /home/runner/.webdrivers/chromedriver_linux64.zip -d /home/runner/.webdrivers/
+          chmod +x /home/runner/.webdrivers/chromedriver
+          rm /home/runner/.webdrivers/chromedriver_linux64.zip    
+
+      - name: Install Gem Bundler
+        run: gem install bundler
+
+      - name: Install Gems from Gemfile
+        run: bundle install
+
+      - name: Build with cucumber
+        run: cucumber --publish

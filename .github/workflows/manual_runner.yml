@@ -19,8 +19,11 @@ jobs:
         with:
           ruby-version: '3.x'
 
-      - name: Install Chrome Driver
-        run: gem install webdrivers
+      - name: Install Gem Bundler
+        run: gem install bundler
+
+      - name: Install Gems from Gemfile
+        run: bundle install
 
       - name: Build with cucumber
         run: cucumber --publish

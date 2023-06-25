@@ -34,3 +34,12 @@ jobs:
 
       - name: Build with cucumber
         run: cucumber --publish
+        
+      - name: Extract Cucumber report link
+        run: |
+         report_link=$(cucumber --show-report-link)
+         pattern="https://reports.cucumber.io/reports/.*"
+         if [[ $report_link =~ $pattern ]]; then
+         echo "Cucumber Report Link: ${BASH_REMATCH[0]%/}"
+         else
+         fi

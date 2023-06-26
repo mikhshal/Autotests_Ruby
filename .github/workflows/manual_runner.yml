@@ -33,7 +33,11 @@ jobs:
       - name: Install Gems from Gemfile
         run: bundle install
 
-      - name: Run Cucumber Tests
-        env:
-          CUCUMBER_PUBLISH_TOKEN: ${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
-        run: cucumber --publish
+      - name: Run Cucumber Tests and Generate HTML Report
+        run: cucumber --format html --out report.html
+
+      - name: Save Report as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: cucumber-report
+          path: report.html

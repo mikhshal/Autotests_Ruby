@@ -32,10 +32,14 @@ jobs:
       - name: Install Gems from Gemfile
         run: bundle install
       - name: Run Cucumber Tests
-        run: cucumber --format html --out report.html
-
-      - name: Upload Cucumber Report
-        uses: actions/upload-artifact@v2
+        run: cucumber --publish
+      - name: Extract log text
+        uses: actions/github-script@v4
         with:
-          name: Cucumber Report
-          path: report.html
+         script: |
+          const pattern = /https://reports.cucumber.io/reports//;  
+          const logText = context.payload.workflow_run.logs;  
+          const extractedText = logText.match(pattern);
+          console.log(extractedText);  
+          // Store the extracted text as an output for later use
+          core.setOutput('extractedText', extractedText);

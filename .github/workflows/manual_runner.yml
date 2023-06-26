@@ -30,9 +30,6 @@ jobs:
       - name: Install Gem Bundler
         run: gem install bundler
 
-      - name: Set Environment Variable
-        run: echo "CUCUMBER_PUBLISH_TOKEN=b9bb91a5-65ac-4858-aeaa-58162f3fdc9b" >> $GITHUB_ENV
-
       - name: Install Gems from Gemfile
         run: bundle install
 

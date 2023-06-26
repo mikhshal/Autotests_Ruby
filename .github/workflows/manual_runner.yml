@@ -33,17 +33,33 @@ jobs:
         run: bundle install
       - name: Run Cucumber Tests
         run: cucumber --publish
+      - name: Get Workflow Run Logs
+        id: get-logs
+        run: |
+          echo "Workflow ID: ${{ github.run_id }}"
+          LOGS=$(curl -sH "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/logs")
+          echo "::set-output name=logs::$LOGS"
+
       - name: Extract log text
         uses: actions/github-script@v4
         with:
-         script: |
-          const pattern = /https:\/\/reports\.cucumber\.io\/reports\/[\w-]+/; 
-          const logText = context.payload.workflow_run.logs;  
-          const extractedText = logText.match(pattern);
-          console.log(extractedText);  
-          core.setOutput('extractedText', extractedText);
-          
+          script: |
+            const pattern = /https:\/\/reports\.cucumber\.io\/reports\/[\w-]+/;
+            const logText = '${{ steps.get-logs.outputs.logs }}';
+            const extractedText = logText.match(pattern);
+            console.log(extractedText);
+            core.setOutput('extractedText', extractedText);
+
       - name: Display extracted text
         run: |
-         echo "Extracted text: ${{ steps.extract_text.outputs.extractedText }}"
+          echo "Extracted text: ${{ steps.extract-text.outputs.extractedText }}"
+
+
+
+
+
+
+
+
      

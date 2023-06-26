@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: '3.x'
+
       - name: Install ChromeDriver
         run: |
           LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
@@ -29,37 +30,13 @@ jobs:
       - name: Install Gem Bundler
         run: gem install bundler
 
+      - name: Set Environment Variable
+        run: echo "CUCUMBER_PUBLISH_TOKEN=b9bb91a5-65ac-4858-aeaa-58162f3fdc9b" >> $GITHUB_ENV
+
       - name: Install Gems from Gemfile
         run: bundle install
+
       - name: Run Cucumber Tests
+        env:
+          CUCUMBER_PUBLISH_TOKEN: ${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
         run: cucumber --publish
-      - name: Get Workflow Run Logs
-        id: get-logs
-        run: |
-          echo "Workflow ID: ${{ github.run_id }}"
-          LOGS=$(curl -sH "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                  "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/logs")
-          echo "::set-output name=logs::$LOGS"
-
-      - name: Extract log text
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const pattern = /https:\/\/reports\.cucumber\.io\/reports\/[\w-]+/;
-            const logText = '${{ steps.get-logs.outputs.logs }}';
-            const extractedText = logText.match(pattern);
-            console.log(extractedText);
-            core.setOutput('extractedText', extractedText);
-
-      - name: Display extracted text
-        run: |
-          echo "Extracted text: ${{ steps.extract-text.outputs.extractedText }}"
-
-
-
-
-
-
-
-
-     

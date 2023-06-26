@@ -37,9 +37,13 @@ jobs:
         uses: actions/github-script@v4
         with:
          script: |
-          const pattern = /https://reports.cucumber.io/reports//;  
+          const pattern = /https:\/\/reports\.cucumber\.io\/reports\/[\w-]+/; 
           const logText = context.payload.workflow_run.logs;  
           const extractedText = logText.match(pattern);
           console.log(extractedText);  
-          // Store the extracted text as an output for later use
           core.setOutput('extractedText', extractedText);
+          
+      - name: Display extracted text
+        run: |
+         echo "Extracted text: ${{ steps.extract_text.outputs.extractedText }}"
+     

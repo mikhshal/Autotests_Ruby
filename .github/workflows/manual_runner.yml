@@ -34,7 +34,7 @@ jobs:
         run: bundle install
 
       - name: Run Cucumber Tests and Generate HTML Report
-        run: cucumber --format html --out report.html
+        run: cucumber --publish --format html --out report.html
 
       - name: Save Report as Artifact
         uses: actions/upload-artifact@v2
